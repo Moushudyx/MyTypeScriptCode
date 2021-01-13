@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>测试用的页面-2</title>
+        <script>
+            "use strict";
+            (function () {
+                /**图片的URL, 可能是 data-url、data-src、file之类的 */
+                var lazyAttr = "lazy-src";
+                /**你打算从哪个部分获取需要懒加载的元素 */
+                var app = document;
+                /**CSS选择器 */
+                var mySelector = "img[" + lazyAttr + "]";
+                /**默认的图片URL */
+                var defaultPicURL = "";
+                /**主要处理部分 */
+                function handler() {
+                    var imgs = app.querySelectorAll(mySelector);
+                    var elems = [];
+                    // console.log(imgs);
+                    for (var i = 0; i < imgs.length; i++) {
+                        var img = imgs[i];
+                        img.setAttribute("src", defaultPicURL);
+                        elems.push(img);
+                    }
+                    window.addEventListener(
+                        "scroll",
+                        throttledAndDebounce(load, 500)
+                    );
+                    /**触发后检查一轮 */
+                    function load() {
+                        for (var i = 0; i < elems.length; i++) {
+                            var img = elems[i];
+                            if (!img) {
+                                continue;
+                            }
+                            if (
+                                img.getBoundingClientRect().top <=
+                                document.documentElement.clientHeight
+                            ) {
+                                img.setAttribute(
+                                    "src",
+                                    img.getAttribute(lazyAttr) || defaultPicURL
+                                );
+                                elems[i] = undefined;
+                            }
+                        }
+                        reflash();
+                    }
+                    /**更新图片列表 */
+                    function reflash() {
+                        var x = [];
+                        for (var i = 0; i < elems.length; i++) {
+                            var img = elems[i];
+                            if (typeof img != "undefined") {
+                                x.push(img);
+                            }
+                        }
+                        elems = x;
+                    }
+                }
+                function throttledAndDebounce(handler, threshold) {
+                    var last;
+                    var timeout;
+                    return function () {
+                        var now = new Date().getTime();
+                        var timeDiff = now - (last || 0);
+                        threshold = threshold || 300;
+                        if (timeDiff > threshold) {
+                            last = now;
+                            clearTimeout(timeout);
+                            handler();
+                        } else {
+                            clearTimeout(timeout);
+                            timeout = setTimeout(function () {
+                                handler();
+                            }, timeDiff);
+                        }
+                    };
+                }
+                document.readyState == "loading"
+                    ? window.addEventListener("DOMContentLoaded", handler)
+                    : handler();
+            })();
+        </script>
+        <style>
+            body > div {
+                min-height: 360px;
+                border-radius: 5px;
+                border: 3px solid #ccc;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div>
+                <h1>
+                    <center>图片懒加载测试-传统的方法，支持IE</center>
+                </h1>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="http://www.dmoe.cc/random.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+        <div>
+            <div>
+                <h2><center>图片懒加载测试</center></h2>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="https://api.dujin.org/bing/1366.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+        <div>
+            <div>
+                <h2><center>图片懒加载测试</center></h2>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="http://api.mtyqx.cn/api/random.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+        <div>
+            <div>
+                <h2><center>图片懒加载测试</center></h2>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="http://api.mtyqx.cn/tapi/random.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+    </body>
+</html>

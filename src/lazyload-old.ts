@@ -42,16 +42,17 @@ interface HTMLElement {
                 var img = elems[i]
                 if (typeof img != 'undefined') { x.push(img) }
             }
+            elems = x
         }
     }
-    function throttledAndDebounce(handler: Function, threshold?: number, _arguments?: Array<any>) {
+    function throttledAndDebounce(handler: Function, threshold?: number) {
         var last: number | undefined
         var timeout: number | undefined
-        threshold = threshold || 300;
         return function () {
             var now = new Date().getTime()
             var timeDiff = now - (last || 0)
-            if (timeDiff > (threshold || 300)) {
+            threshold = threshold || 300;
+            if (timeDiff > threshold) {
                 last = now
                 clearTimeout(timeout)
                 handler()

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>测试用的页面-2</title>
+        <script>
+            "use strict";
+            // 一个现代化的懒加载实现
+            (function () {
+                /**图片的URL, 可能是 data-url、data-src、file之类的 */
+                const lazyAttr = "lazy-src";
+                /**你打算从哪个部分获取需要懒加载的元素 */
+                const app = document;
+                /**CSS选择器 */
+                const mySelector = "img[" + lazyAttr + "]";
+                /**默认的图片URL */
+                const defaultPicURL = "";
+                /**主要处理部分 */
+                function handler() {
+                    let imgs = Array.from(app.querySelectorAll(mySelector));
+                    // console.log(imgs);
+                    let obs = new IntersectionObserver((entries) => {
+                        let img = entries[0].target;
+                        img.setAttribute(
+                            "src",
+                            img.getAttribute(lazyAttr) || defaultPicURL
+                        );
+                        obs.unobserve(img); // 完成任务取消监视
+                    });
+                    for (let img of imgs) {
+                        img.setAttribute("src", defaultPicURL);
+                        obs.observe(img); // 监视该元素
+                    }
+                }
+                document.readyState == "loading"
+                    ? window.addEventListener("DOMContentLoaded", handler)
+                    : handler();
+            })();
+        </script>
+        <style>
+            body > div {
+                min-height: 360px;
+                border-radius: 5px;
+                border: 3px solid #ccc;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div>
+                <h1>
+                    <center>图片懒加载测试-高效的方法，不支持IE</center>
+                </h1>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="http://www.dmoe.cc/random.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+        <div>
+            <div>
+                <h2><center>图片懒加载测试</center></h2>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="https://api.dujin.org/bing/1366.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+        <div>
+            <div>
+                <h2><center>图片懒加载测试</center></h2>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="http://api.mtyqx.cn/api/random.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+        <div>
+            <div>
+                <h2><center>图片懒加载测试</center></h2>
+            </div>
+        </div>
+        <div>
+            <img
+                lazy-src="http://api.mtyqx.cn/tapi/random.php"
+                alt="随机图片"
+                height="400"
+            />
+        </div>
+    </body>
+</html>
