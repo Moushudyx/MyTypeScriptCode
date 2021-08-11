@@ -4,16 +4,20 @@
  * @param threshold 防抖阈值, 单位ms
  * @param _arguments 传给方法的参数
  */
-let debounce: (handler: Function, threshold?: number, _arguments?: Array<any>) => void
 // 防抖函数的简单实现, 必定执行最后一次操作, 但是不会立即响应
-debounce = function (handler, threshold = 300, _arguments) {
-    let timeout: number | undefined
-    return function () {
-        clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            if (_arguments) { handler(..._arguments) } else { handler() }
-        }, threshold)
-    }
+function debounce<T>(
+  handler: (..._arguments: T[]) => any,
+  threshold = 300,
+  _arguments?: T[]
+) {
+  let timeout: number | undefined;
+  return function () {
+    if (timeout) clearTimeout(timeout);
+    timeout = window.setTimeout(() => {
+      if (_arguments) handler(..._arguments);
+      else handler();
+    }, threshold);
+  };
 }
 /**
  * 节流函数, 防止用户在短时间内触发次数太多
